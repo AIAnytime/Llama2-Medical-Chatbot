@@ -1,4 +1,4 @@
-Creating a comprehensive README is essential to help users understand, set up, and use your project effectively. Here's a template for your project's README:
+
 
 # Langchain Medical Bot
 
@@ -95,7 +95,7 @@ Contributions to the Langchain Medical Bot are welcome! If you'd like to contrib
 
 ## License
 
-This project is licensed under the [Your License Here] License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ---
 
