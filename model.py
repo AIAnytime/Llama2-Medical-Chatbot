@@ -1,5 +1,5 @@
 from langchain.document_loaders import PyPDFLoader, DirectoryLoader
-from langchain import PromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import CTransformers
