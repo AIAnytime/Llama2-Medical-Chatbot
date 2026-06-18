@@ -1,5 +1,5 @@
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.llms import CTransformers
@@ -51,7 +51,8 @@ def load_llm():
 def qa_bot():
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
                                        model_kwargs={'device': 'cpu'})
-    db = FAISS.load_local(DB_FAISS_PATH, embeddings)
+    db = FAISS.load_local(DB_FAISS_PATH, embeddings,
+                          allow_dangerous_deserialization=True)
     llm = load_llm()
     qa_prompt = set_custom_prompt()
     qa = retrieval_qa_chain(llm, qa_prompt, db)
@@ -61,7 +62,7 @@ def qa_bot():
 #output function
 def final_result(query):
     qa_result = qa_bot()
-    response = qa_result({'query': query})
+    response = qa_result.invoke({"query": query})
     return response
 
 #chainlit code
@@ -82,7 +83,7 @@ async def main(message: cl.Message):
         stream_final_answer=True, answer_prefix_tokens=["FINAL", "ANSWER"]
     )
     cb.answer_reached = True
-    res = await chain.acall(message.content, callbacks=[cb])
+    res = await chain.ainvoke({"query": message.content}, config={"callbacks": [cb]})
     answer = res["result"]
     sources = res["source_documents"]
 
@@ -92,4 +93,3 @@ async def main(message: cl.Message):
         answer += "\nNo sources found"
 
     await cl.Message(content=answer).send()
-
